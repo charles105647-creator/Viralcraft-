@@ -1,0 +1,6 @@
+{
+  "name": "ViralCraft AI",
+  "description": "Gerador de vídeos de produtos 9:16 com avatares IA, clonagem de áudio e publicação direta no TikTok, Shopee Vídeo, Reels e Facebook.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
