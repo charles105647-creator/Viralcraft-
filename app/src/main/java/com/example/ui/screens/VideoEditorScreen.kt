@@ -52,6 +52,8 @@ import androidx.compose.material.icons.filled.VerticalAlignTop
 import androidx.compose.material.icons.filled.VolumeUp
 import coil.compose.AsyncImage
 import com.example.data.model.AvatarStyle
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesomeMotion
 import androidx.compose.material.icons.filled.HighQuality
 import androidx.compose.material.icons.filled.Send
@@ -141,6 +143,7 @@ fun VideoEditorScreen(
     onNavigateToScriptAssistant: () -> Unit,
     onNavigateToAvatarGallery: (() -> Unit)? = null,
     onNavigateToPublish: (() -> Unit)? = null,
+    onBackToMenu: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -153,6 +156,10 @@ fun VideoEditorScreen(
     val selectedTextId by viewModel.selectedTextId.collectAsStateWithLifecycle()
     val project by viewModel.editorVideoProject.collectAsStateWithLifecycle()
     val avatars by viewModel.avatars.collectAsStateWithLifecycle()
+
+    BackHandler(enabled = onBackToMenu != null) {
+        onBackToMenu?.invoke()
+    }
     val exportQuality by viewModel.editorExportQuality.collectAsStateWithLifecycle()
 
     var activeTab by remember { mutableIntStateOf(0) } // 0: Clipes, 1: Transições, 2: Texto, 3: Áudio, 4: Avatar
@@ -311,33 +318,55 @@ fun VideoEditorScreen(
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Top Header with Save and Post Buttons
+        // Top Header with Back Button, Save and Post Buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = "Editor de Vídeo 9:16",
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Surface(
-                        color = BrandPrimary.copy(alpha = 0.25f),
-                        shape = RoundedCornerShape(6.dp)
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (onBackToMenu != null) {
+                    IconButton(
+                        onClick = { onBackToMenu() },
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(DarkSurfaceVariant)
+                            .testTag("editor_back_to_menu_button")
                     ) {
-                        Text(
-                            text = "${String.format("%.1f", totalDuration)}s",
-                            color = BrandPrimary,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar ao Menu",
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
+
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = "Editor de Vídeo 9:16",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Surface(
+                            color = BrandPrimary.copy(alpha = 0.25f),
+                            shape = RoundedCornerShape(6.dp)
+                        ) {
+                            Text(
+                                text = "${String.format("%.1f", totalDuration)}s",
+                                color = BrandPrimary,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
 
                 // Clickable Export Quality indicator
                 Row(
@@ -377,6 +406,7 @@ fun VideoEditorScreen(
                     )
                 }
             }
+        }
 
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 // Save button

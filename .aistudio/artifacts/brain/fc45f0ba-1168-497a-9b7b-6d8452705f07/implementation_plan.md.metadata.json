@@ -1,0 +1,6 @@
+{
+  "summary":  "Plano de resolução para o problema de instalação do APK: incremento de versão para v1.2 (Build 3), recompilação forçada sem cache e garantia de desinstalação prévia para sobreposição limpa no Android.",
+  "updatedAt":  "2026-10-30T16:06:39.724318408Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

@@ -2,6 +2,7 @@ package com.example
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -93,6 +94,19 @@ fun MainApp(viewModel: MainViewModel) {
     var showVoiceStudioModal by remember { mutableStateOf(false) }
     var showScriptAssistantModal by remember { mutableStateOf(false) }
     var showAvatarGalleryModal by remember { mutableStateOf(false) }
+
+    val canGoBack = showVoiceStudioModal || showScriptAssistantModal || showAvatarGalleryModal || currentTab != MainTab.HOME
+    BackHandler(enabled = canGoBack) {
+        if (showVoiceStudioModal) {
+            showVoiceStudioModal = false
+        } else if (showScriptAssistantModal) {
+            showScriptAssistantModal = false
+        } else if (showAvatarGalleryModal) {
+            showAvatarGalleryModal = false
+        } else if (currentTab != MainTab.HOME) {
+            currentTab = MainTab.HOME
+        }
+    }
 
     Scaffold(
         contentWindowInsets = WindowInsets.safeDrawing,
@@ -191,6 +205,9 @@ fun MainApp(viewModel: MainViewModel) {
                         onVideoCreated = {
                             currentTab = MainTab.EDITOR
                         },
+                        onBackToMenu = {
+                            currentTab = MainTab.HOME
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -201,6 +218,9 @@ fun MainApp(viewModel: MainViewModel) {
                         onNavigateToScriptAssistant = { showScriptAssistantModal = true },
                         onNavigateToAvatarGallery = { showAvatarGalleryModal = true },
                         onNavigateToPublish = { currentTab = MainTab.AUTO_PUBLISH },
+                        onBackToMenu = {
+                            currentTab = MainTab.HOME
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -209,6 +229,9 @@ fun MainApp(viewModel: MainViewModel) {
                         viewModel = viewModel,
                         onNavigateToEditor = { currentTab = MainTab.EDITOR },
                         onNavigateToPublish = { currentTab = MainTab.AUTO_PUBLISH },
+                        onBackToMenu = {
+                            currentTab = MainTab.HOME
+                        },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -218,6 +241,9 @@ fun MainApp(viewModel: MainViewModel) {
                         onNavigateToEditor = { projectId ->
                             projectId?.let { viewModel.loadProjectIntoEditorById(it) }
                             currentTab = MainTab.EDITOR
+                        },
+                        onBackToMenu = {
+                            currentTab = MainTab.HOME
                         },
                         modifier = Modifier.padding(innerPadding)
                     )

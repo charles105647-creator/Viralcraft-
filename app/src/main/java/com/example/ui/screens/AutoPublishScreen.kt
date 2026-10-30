@@ -75,6 +75,8 @@ import com.example.data.local.entities.PostScheduleEntity
 import com.example.data.local.entities.SocialAccountEntity
 import com.example.data.model.PostStatus
 import com.example.data.model.SocialPlatform
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BarChart
 import com.example.ui.components.AnalyticsMonitorDialog
 import com.example.ui.components.PlatformBadge
@@ -93,9 +95,13 @@ import java.util.Locale
 fun AutoPublishScreen(
     viewModel: MainViewModel,
     onNavigateToEditor: ((Long?) -> Unit)? = null,
+    onBackToMenu: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    BackHandler(enabled = onBackToMenu != null) {
+        onBackToMenu?.invoke()
+    }
     val accounts by viewModel.socialAccounts.collectAsStateWithLifecycle()
     val schedules by viewModel.schedules.collectAsStateWithLifecycle()
     var editingAccount by remember { mutableStateOf<SocialAccountEntity?>(null) }
@@ -175,18 +181,41 @@ fun AutoPublishScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "Minhas Redes & Publicação",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Text(
-                        text = "Gerencie seus perfis e postagens em Shopee, TikTok, Instagram e Facebook",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (onBackToMenu != null) {
+                        IconButton(
+                            onClick = { onBackToMenu() },
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(DarkSurfaceVariant)
+                                .testTag("publish_back_to_menu_button")
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Voltar ao Menu",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+
+                    Column {
+                        Text(
+                            text = "Minhas Redes & Publicação",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Text(
+                            text = "Gerencie perfis e postagens em Shopee, TikTok, Instagram e Facebook",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))

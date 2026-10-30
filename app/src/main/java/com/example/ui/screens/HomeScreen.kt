@@ -182,7 +182,7 @@ fun HomeScreen(
                             shape = RoundedCornerShape(6.dp)
                         ) {
                             Text(
-                                text = "9:16 PRO",
+                                text = "9:16 PRO • v1.2 (Build 3)",
                                 color = BrandSecondary,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Black,
@@ -195,6 +195,24 @@ fun HomeScreen(
                         fontSize = 13.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(top = 3.dp)
+                    ) {
+                        Surface(
+                            color = Color(0xFF10B981).copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(4.dp)
+                        ) {
+                            Text(
+                                text = "✓ Versão 1.2 Ativa (Botões de Voltar Incluídos)",
+                                color = Color(0xFF10B981),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                            )
+                        }
+                    }
                 }
 
                 // Firebase Analytics Monitor Button

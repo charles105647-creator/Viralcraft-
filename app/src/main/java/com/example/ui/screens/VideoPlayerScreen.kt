@@ -86,15 +86,21 @@ import kotlinx.coroutines.delay
 import android.content.Intent
 import android.net.Uri
 import coil.compose.AsyncImage
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 
 @Composable
 fun VideoPlayerScreen(
     viewModel: MainViewModel,
     onNavigateToEditor: () -> Unit,
     onNavigateToPublish: () -> Unit,
+    onBackToMenu: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    BackHandler(enabled = onBackToMenu != null) {
+        onBackToMenu?.invoke()
+    }
     val currentVideo by viewModel.currentPlayingVideo.collectAsStateWithLifecycle()
     val activePlatform by viewModel.playerPreviewPlatform.collectAsStateWithLifecycle()
     val isAudioPlaying by viewModel.audioEngine.isPlaying.collectAsStateWithLifecycle()
@@ -175,12 +181,33 @@ fun VideoPlayerScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "Simulador 9:16",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (onBackToMenu != null) {
+                    IconButton(
+                        onClick = { onBackToMenu() },
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(DarkSurfaceVariant)
+                            .testTag("player_back_to_menu_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar ao Menu",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+                Text(
+                    text = "Simulador 9:16",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
             // Channel Switcher
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 SocialPlatform.values().forEach { platform ->

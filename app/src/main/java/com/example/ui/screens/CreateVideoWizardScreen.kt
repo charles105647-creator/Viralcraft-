@@ -81,9 +81,11 @@ import com.example.ui.theme.DarkSurfaceVariant
 import com.example.ui.theme.ShopeeOrange
 import com.example.ui.viewmodel.MainViewModel
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.PickVisualMediaRequest
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Delete
@@ -107,6 +109,7 @@ fun CreateVideoWizardScreen(
     onNavigateToScriptAssistant: () -> Unit,
     onNavigateToAvatarGallery: (() -> Unit)? = null,
     onVideoCreated: (Long) -> Unit,
+    onBackToMenu: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -131,6 +134,14 @@ fun CreateVideoWizardScreen(
 
     val stepTitles = listOf("1. Produto & Link", "2. Avatar IA", "3. Voz & Áudio", "4. Roteiro & Canais")
 
+    BackHandler {
+        if (currentStep > 0) {
+            currentStep--
+        } else {
+            onBackToMenu()
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -138,18 +149,48 @@ fun CreateVideoWizardScreen(
     ) {
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Title
-        Text(
-            text = "Criador de Vídeo 9:16",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Gere vídeos de alta conversão para Shopee, TikTok & Reels",
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        // Title and Back Button Header
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    if (currentStep > 0) {
+                        currentStep--
+                    } else {
+                        onBackToMenu()
+                    }
+                },
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(DarkSurfaceVariant)
+                    .testTag("back_to_menu_button")
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = if (currentStep > 0) "Voltar etapa anterior" else "Voltar ao Menu",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Criador de Vídeo 9:16",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = if (currentStep > 0) "Etapa ${currentStep + 1} de 4 • Toque para voltar" else "Gere vídeos de alta conversão para Shopee, TikTok & Reels",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 

@@ -82,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.ai.ScriptVariation
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material.icons.filled.LocalFireDepartment
